@@ -28,14 +28,10 @@ class firebase_manager():
 	def refresh_user_id_token(self):
 		self.user = self.auth.refresh(self.user['refreshToken'])
 
-	def save_data_row_to_firebase(self, dataset):
+	def save_data_row_to_firebase(self, dataset, row_params):
 		# Pass the user's idToken to the push method
 		db = self.firebase.database()
 		self.refresh_user_id_token()
-
-		# params for charity characters
-		# row_params = ['id', 'type', 'url', 'domain']
-		row_params = ['id', 'mission_statement']
 
 		for data in dataset:
 			org_id = data[0].split('.')[0]
@@ -43,3 +39,4 @@ class firebase_manager():
 			for index, data_node in enumerate(data):
 				data_collection[row_params[index]] = data_node
 			results = db.child('charities').child(org_id).push(data_collection, self.user['idToken'])
+			
