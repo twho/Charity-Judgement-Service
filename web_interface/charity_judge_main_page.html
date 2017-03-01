@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<body>
+	<script src="https://www.gstatic.com/firebasejs/3.6.10/firebase.js"></script>
+	<script type="text/javascript">
+  		// Initialize Firebase
+  		var config = {
+        apiKey: "AIzaSyDGFBbjnXFZ7WS9XWctDdVr8p0U9BuPsoU",
+        authDomain: "charity-sample-database.firebaseapp.com",
+        databaseURL: "https://charity-sample-database.firebaseio.com",
+        storageBucket: "charity-sample-database.appspot.com",
+        messagingSenderId: "347624664460"
+      };
+
+  		// Initialize the default app
+  		var defaultApp = firebase.initializeApp(config);
+
+  		console.log(defaultApp.name); 
+  		
+  		// Get firebase database
+  		var defaultDatabase = defaultApp.database();
+
+      // data set to rate
+      var datasetToRate = [];
+      var keyList = [];
+
+      function getRaterList(raterName){
+        return firebase.database().ref('/charities/').once('value').then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            keyList.push(childSnapshot.key.toString());
+            retrieveDataOnce(keyList, 0, raterName);
+          });
+        }, function(error) {
+          // The callback failed.
+          console.error(error);
+        });
+      }
+
+      var raterName
+      function setName(){
+        raterName = document.getElementById("name").value;
+        raterName = raterName.replace(/\s/g,'');  
+        document.getElementById("rateAs").innerHTML = "Rate as " + raterName;
+        getRaterList(raterName);
+      }
+
+      // record current position
+      var currentPost;
+
+  		function retrieveDataOnce(keyList, position, raterName) {
+        currentPost = position;
+        return firebase.database().ref('/charities/' + keyList[position]).once('value').then(function(snapshot) {
+          snapshot.forEach(function(childSnapshot) {
+            var charityData = childSnapshot.val();
+
+            if (charityData.rater.includes(raterName.toLowerCase())) {
+              retrieveDataOnce(keyList, position + 1, raterName);
+            };
+            
+            var name = charityData.name;
+            var missionStatement = charityData.mission_statement;
+            document.getElementById("title").innerHTML = name;
+            document.getElementById("content").innerHTML = missionStatement;
+            console.log(name);s
+          });
+        }, function(error) {
+          // The callback failed.
+          console.error(error);
+        });
+  		}
+
+      function submitOneInstance(){
+        retrieveDataOnce(keyList, currentPost, raterName);
+      }
+	</script>
+	<form>
+      <p id="title">Loading charity name</p>
+      <p id="content">Loading charity mission statement</p>
+  		Your name:<br>
+  		<input type="text" id="name" value="Michael">
+  		<p id="rateAs">Set your full name without space start</p>
+  		<br><br>
+  		<input type="button" onclick="submitOneInstance()" value="Submit">
+      <input type="button" onclick="setName()" value="Set name">
+	</form> 	
+</body>
+</html>

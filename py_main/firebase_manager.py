@@ -2,11 +2,11 @@
 import pyrebase
 
 config = {
-	"apiKey": "AIzaSyCwHSRlrPwTh_fcUxen681wRAIAjfh5Xmc",
-    "authDomain": "charity-database-4520a.firebaseapp.com",
-    "databaseURL": "https://charity-database-4520a.firebaseio.com",
-    "storageBucket": "charity-database-4520a.appspot.com",
-    "messagingSenderId": "637988160509"
+	"apiKey": "AIzaSyDGFBbjnXFZ7WS9XWctDdVr8p0U9BuPsoU",
+    "authDomain": "charity-sample-database.firebaseapp.com",
+    "databaseURL": "https://charity-sample-database.firebaseio.com",
+    "storageBucket": "charity-sample-database.appspot.com",
+    "messagingSenderId": "347624664460"
 }
 
 class firebase_manager():
@@ -37,6 +37,9 @@ class firebase_manager():
 			org_id = data[0].split('.')[0]
 			data_collection = {}
 			for index, data_node in enumerate(data):
-				data_collection[row_params[index]] = data_node
+				if index > 5:
+					data_collection[row_params[index]] = "n"
+				else:
+					data_collection[row_params[index]] = data_node
 			results = db.child('charities').child(org_id).push(data_collection, self.user['idToken'])
 			

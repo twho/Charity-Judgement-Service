@@ -25,6 +25,6 @@ class file_reader():
 			read_csv_file = csv.reader(csvfile, delimiter=',')
 
 			for row in read_csv_file:
-				data_row.append([row[0], row[2]])
+				data_row.append([row[0], row[1], row[2]])
 
 		return data_row
