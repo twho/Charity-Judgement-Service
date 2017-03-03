@@ -23,6 +23,7 @@
       // data set to rate
       var datasetToRate = [];
       var keyList = [];
+      var ifStarted = false;
 
       function getRaterList(raterName){
         return firebase.database().ref('/charities/').once('value').then(function(snapshot) {
@@ -36,16 +37,19 @@
         });
       }
 
-      var raterName
+      var raterName;
       function setName(){
         raterName = document.getElementById("name").value;
         raterName = raterName.replace(/\s/g,'');  
         document.getElementById("rateAs").innerHTML = "Rate as " + raterName;
         getRaterList(raterName);
+        ifStarted = true;
       }
 
       // record current position
       var currentPost;
+      var currentRaters;
+      var currentKey;
 
   		function retrieveDataOnce(keyList, position, raterName) {
         currentPost = position;
@@ -53,15 +57,17 @@
           snapshot.forEach(function(childSnapshot) {
             var charityData = childSnapshot.val();
 
-            if (charityData.rater.includes(raterName.toLowerCase())) {
+            currentRaters = charityData.rater;
+            currentKey = childSnapshot.key;
+
+            if (currentRaters.toLowerCase().includes(raterName.toLowerCase())) {
               retrieveDataOnce(keyList, position + 1, raterName);
-            };
-            
-            var name = charityData.name;
-            var missionStatement = charityData.mission_statement;
-            document.getElementById("title").innerHTML = name;
-            document.getElementById("content").innerHTML = missionStatement;
-            console.log(name);s
+            } else {
+              var name = charityData.name;
+              var missionStatement = charityData.mission_statement;
+              document.getElementById("title").innerHTML = name;
+              document.getElementById("content").innerHTML = missionStatement;
+            };  
           });
         }, function(error) {
           // The callback failed.
@@ -70,14 +76,55 @@
   		}
 
       function submitOneInstance(){
-        retrieveDataOnce(keyList, currentPost, raterName);
+        if (ifStarted) {
+          console.log(selection);
+          if(selection != '') {
+            recordRater();
+            writeToFirebase(selection);
+            retrieveDataOnce(keyList, currentPost, raterName);
+            selection = '';
+            rb1.checked = false;
+            rb2.checked = false;
+          } else {
+            alert("Please select one of the choices.");
+          }
+        } else {
+          alert("Please set your name first.");
+        }
+      }
+
+      function recordRater() {
+        var raterRef = firebase.database().ref('/charities/' + keyList[currentPost] + '/' + currentKey);
+        var updates = {};
+        updates['/rater/'] = currentRaters + "," + raterName;
+        return raterRef.update(updates);
+      }
+
+      function writeToFirebase(selection){
+        var raterResultRef = firebase.database().ref('/charities/' + keyList[currentPost] + '/' + currentKey).push();
+        var updates = {};
+        updates['/' + raterName + '/'] = selection;
+        return raterResultRef.update(updates);
+      }
+
+      var selection = '';
+      function handleSelect(radio){
+        var rb1 = document.getElementById("rb1");
+        var rb2 = document.getElementById("rb2");
+        if (rb1.checked) {
+          selection = 'human_services';
+        } else {
+          selection = 'community_development';
+        }
       }
 	</script>
 	<form>
       <p id="title">Loading charity name</p>
       <p id="content">Loading charity mission statement</p>
   		Your name:<br>
-  		<input type="text" id="name" value="Michael">
+  		<input type="text" id="name" value="Michael"><br><br>
+      <input type="radio" id="rb1" name="category" value="human_services" onclick="handleSelect(this)">Human Services<br>
+      <input type="radio" id="rb2" name="category" value="community_development" onclick="handleSelect(this)">Community Development<br>
   		<p id="rateAs">Set your full name without space start</p>
   		<br><br>
   		<input type="button" onclick="submitOneInstance()" value="Submit">
