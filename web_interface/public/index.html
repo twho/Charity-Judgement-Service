@@ -44,6 +44,10 @@
         document.getElementById("rateAs").innerHTML = "Rate as " + raterName;
         getRaterList(raterName);
         ifStarted = true;
+        // set all elements visible
+        document.getElementById("ratingView").style.display = 'block';
+        document.getElementById("btnSubmit").style.display = 'block';
+        document.getElementById("btnSetName").style.display = 'none';
       }
 
       // record current position
@@ -112,23 +116,25 @@
         var rb1 = document.getElementById("rb1");
         var rb2 = document.getElementById("rb2");
         if (rb1.checked) {
-          selection = 'human_services';
+          selection = 'homeless_related';
         } else {
-          selection = 'community_development';
+          selection = 'not_homeless_related';
         }
       }
 	</script>
-	<form>
-      <p id="title">Loading charity name</p>
-      <p id="content">Loading charity mission statement</p>
-  		Your name:<br>
-  		<input type="text" id="name" value="Michael"><br><br>
-      <input type="radio" id="rb1" name="category" value="human_services" onclick="handleSelect(this)">Human Services<br>
-      <input type="radio" id="rb2" name="category" value="community_development" onclick="handleSelect(this)">Community Development<br>
-  		<p id="rateAs">Set your full name without space start</p>
+	<form >
+      Your name:<br>
+      <input type="text" id="name" value="Michael"><br><br>
+      <div id="ratingView" style="display:none">
+        <p id="title">Loading charity name</p>
+        <p id="content">Loading charity mission statement</p>
+        <input type="radio" id="rb1" name="category" value="human_services" onclick="handleSelect(this)">Poverty and/or Homelessness related<br>
+        <input type="radio" id="rb2" name="category" value="community_development" onclick="handleSelect(this)">Not poverty and/or Homelessness related<br>
+      </div>
+  		<p id="rateAs">Set your full name without space to begin</p>
   		<br><br>
-  		<input type="button" onclick="submitOneInstance()" value="Submit">
-      <input type="button" onclick="setName()" value="Set name">
+  		<input id="btnSubmit" type="button" onclick="submitOneInstance()" value="Submit" style="display:none">
+      <input id="btnSetName" type="button" onclick="setName()" value="Set name">
 	</form> 	
 </body>
 </html>

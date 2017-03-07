@@ -31,5 +31,5 @@ combined_set = m_file_writer.combine_data_set(data_row_1, data_row_2)
 fieldnames_include_rater = fieldnames
 fieldnames_include_rater.append('rater')
 m_file_writer = file_writer(directory, fieldnames_include_rater)
-random_data_set = m_file_writer.get_random_n_data_as_csv(50, combined_set)
+random_data_set = m_file_writer.get_random_n_data_as_csv(200, combined_set)
 m_firebase_manger.save_data_row_to_firebase(random_data_set, fieldnames_include_rater)
