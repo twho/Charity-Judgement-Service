@@ -57,6 +57,13 @@
 
   		function retrieveDataOnce(keyList, position, raterName) {
         currentPost = position;
+
+        if(position > 200){
+        	document.getElementById("title").innerHTML = "You have finished this rating session.";
+        	document.getElementById("content").innerHTML = "";
+        	return;
+        }
+
         return firebase.database().ref('/charities/' + keyList[position]).once('value').then(function(snapshot) {
           snapshot.forEach(function(childSnapshot) {
             var charityData = childSnapshot.val();
@@ -67,6 +74,7 @@
             if (currentRaters.toLowerCase().includes(raterName.toLowerCase())) {
               retrieveDataOnce(keyList, position + 1, raterName);
             } else {
+              document.getElementById("rateInstance").innerHTML = "You have already rated " + (position - 1) + " charity instance(s).";
               var name = charityData.name;
               var missionStatement = charityData.mission_statement;
               document.getElementById("title").innerHTML = name;
@@ -128,10 +136,11 @@
       <div id="ratingView" style="display:none">
         <p id="title">Loading charity name</p>
         <p id="content">Loading charity mission statement</p>
-        <input type="radio" id="rb1" name="category" value="human_services" onclick="handleSelect(this)">Poverty and/or Homelessness related<br>
-        <input type="radio" id="rb2" name="category" value="community_development" onclick="handleSelect(this)">Not poverty and/or Homelessness related<br>
+        <input type="radio" id="rb1" name="category" value="human_services" onclick="handleSelect(this)">Poverty and/or Homelessness related<br><br>
+        <input type="radio" id="rb2" name="category" value="community_development" onclick="handleSelect(this)">Not poverty and/or Homelessness related<br><br>
       </div>
   		<p id="rateAs">Set your full name without space to begin</p>
+  		<p id="rateInstance"></p>
   		<br><br>
   		<input id="btnSubmit" type="button" onclick="submitOneInstance()" value="Submit" style="display:none">
       <input id="btnSetName" type="button" onclick="setName()" value="Set name">
