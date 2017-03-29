@@ -38,15 +38,16 @@ class file_writer():
 		 			writer.writerow({self.fieldnames[0]: str(row[0]), self.fieldnames[1]: str(row[1]), self.fieldnames[2]: str(row[2]), self.fieldnames[3]: str(row[3]), self.fieldnames[4]: str(row[4]), self.fieldnames[5]: str(row[5])})
 
 	def get_random_n_data_as_csv(self, n, data_set):
-		with open(self.data_res_path + 'charity_random_' + str(n) + ' _data_set.csv', 'w') as csvfile:
+		with open(self.data_res_path + 'mt_charity_random_' + str(n) + ' _data_set.csv', 'w') as csvfile:
 		 	writer = csv.DictWriter(csvfile, fieldnames=self.fieldnames)
 		 	writer.writeheader()
 		 	random_set = []
 		 	for time in repeat(None, n):
 		 		row = data_set.values()[randint(0, len(data_set.keys()))]
-		 		row.extend(str("n"))
-		 		random_set.append(row)
-		 		writer.writerow({self.fieldnames[0]: str(row[0]), self.fieldnames[1]: str(row[1]), self.fieldnames[2]: str(row[2]), self.fieldnames[3]: str(row[3]), self.fieldnames[4]: str(row[4]), self.fieldnames[5]: str(row[5]), self.fieldnames[6]: str("n")})
+		 		# row.extend(str("n"))
+		 		# random_set.append(row)
+		 		# writer.writerow({self.fieldnames[0]: str(row[0]), self.fieldnames[1]: str(row[1]), self.fieldnames[2]: str(row[2]), self.fieldnames[3]: str(row[3]), self.fieldnames[4]: str(row[4]), self.fieldnames[5]: str(row[5]), self.fieldnames[6]: str("n")})
+		 		writer.writerow({self.fieldnames[0]: str(row[0]), self.fieldnames[1]: str(row[1]), self.fieldnames[2]: str(row[2]), self.fieldnames[3]: str(row[3])})
 		 		data_set.pop(row[0])
 
 		 	return random_set

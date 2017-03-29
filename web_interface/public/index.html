@@ -74,7 +74,7 @@
             if (currentRaters.toLowerCase().includes(raterName.toLowerCase())) {
               retrieveDataOnce(keyList, position + 1, raterName);
             } else {
-              document.getElementById("rateInstance").innerHTML = "You have already rated " + (position - 1) + " charity instance(s).";
+              document.getElementById("rateInstance").innerHTML = "You have already rated " + (position) + " charity instance(s).";
               var name = charityData.name;
               var missionStatement = charityData.mission_statement;
               document.getElementById("title").innerHTML = name;
